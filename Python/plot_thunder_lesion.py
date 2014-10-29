@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Plot PCA and ICA components for after and before ablation data
+Plot PCA and ICA components for after and before ablation data of dhb/vhb with raphe
 """
 #Import python libraries
 import os
@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import seaborn as sns #For creating nice plots
+import pandas as pd
 
 
 filesep = os.path.sep
@@ -44,10 +45,13 @@ def plot_pca_figures(pca, maps, pts, clrs, recon,tt,unique_clrs, matched_pixels,
             fig2 = plt.figure()
             count1=1
             count2=4
-            with sns.axes_style("white"):
-                
+            with sns.axes_style("white"):               
                 for jj in range(6):   
-                    if np.mod(jj,2) == 0:
+#                    print str(ii) + ' ' + str(jj)
+                    if ii == 1 and jj == 2:
+                        count1 = count1+1
+                        continue
+                    if "Before" in Exp_Name[count]:
                         plt.subplot(2,3,count1)                        
                         plt.imshow(maps[:,:,count,:].transpose((1,0,2)))
                         plt.axis('off')
@@ -155,6 +159,54 @@ def plot_pca_figures(pca, maps, pts, clrs, recon,tt,unique_clrs, matched_pixels,
         plt.close()
         
         
+        #Create an lm plot seperating Before and After number of pixels
+        #Make Panda data frame    
+        A = np.zeros((4,np.size(matched_pixels,0)*np.size(matched_pixels,1)), dtype=np.int)
+        matching_BA= [Exp_Name.index(s) for s in Exp_Name if "Before" in s]
+        matching_vhb= [Exp_Name.index(s) for s in Exp_Name if "vHb" in s]
+        matching_dhb= [Exp_Name.index(s) for s in Exp_Name if "dHb" in s]
+        matching_DR= [Exp_Name.index(s) for s in Exp_Name if "DR" in s]
+
+        count = 0
+        for ii in range(0,np.size(matched_pixels,0)):
+            for jj in range(0,np.size(matched_pixels,1)):
+                A[0,count] = matched_pixels[ii,jj]
+                A[1,count] = ii
+                if jj in matching_BA:
+                    A[2,count] = 1 #Before Lesion
+                else:
+                    A[2,count] = 0 #After Lesion
+                #Check which region
+                if jj in matching_vhb:
+                    A[3,count] = 0
+                if jj in matching_dhb:
+                    A[3,count] = 1
+                if jj in matching_DR:
+                    A[3,count] = 2
+                    
+                count = count+1
+        A = np.transpose(A)
+        B = pd.DataFrame({'Pixel':A[:,0], 'response':A[:,1], 'Lesion':A[:,2], 'Region':A[:,3]})
+        B["BeforeAfter"] = B.Lesion.map({1: "Before", 0: "After"})
+        B["Region_Map"] = B.Region.map({0: "vHb", 1: "dHb", 2:"DorsalRaphe"})
+        
+        with sns.axes_style("dark"):
+             fig3 = plt.figure()
+             g = sns.lmplot("Pixel", "Lesion", B, y_jitter=.20, hue="response",col="Region_Map", fit_reg=False, palette=unique_clrs, markers="s", scatter_kws={"s": 50})
+             g.set(ylim = (-0.2, 1.2), yticks=[0, 1], yticklabels=["After", "Before"])
+             plt.axhline(y=0.5, linestyle='-', color='w', linewidth=0.5)
+             fig3 = plt.gcf()
+             pp.savefig(fig3)
+             plt.close()
+
+        with sns.axes_style("dark"):
+             fig3 = plt.figure()
+             g = sns.lmplot("Pixel", "Lesion", B,col="Region_Map", y_jitter=.20, fit_reg=True, palette=unique_clrs, markers="s", scatter_kws={"s": 50})
+             g.set(ylim = (-0.2, 1.2), yticks=[0, 1], yticklabels=["After", "Before"])
+             plt.axhline(y=0.5, linestyle='-', color='w', linewidth=0.5)
+             fig3 = plt.gcf()
+             pp.savefig(fig3)
+             plt.close()  
     pp.close()
     
 def plot_vertical_lines():

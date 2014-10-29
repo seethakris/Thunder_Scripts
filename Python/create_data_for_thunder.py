@@ -62,8 +62,16 @@ def create_textfile(Exp_Folder, text_filename, num_time, num_time_req, img_size_
                 else:
                     data[:,:,ii] = np.uint8(image/256)
                 ii = ii+1   
-                    
-       
+                                  
+#        #Get Background and subtract from the image
+#        roi_small_area = np.reshape(data[0:10, 0:10, :],(100, np.size(data,2)))
+#        average_area = np.average(np.transpose(roi_small_area),1)
+#        bgrnd_img = average_area
+#        Img1_sub = data - bgrnd_img
+#        
+#        #Filter image using a median filter
+#        data = Img1_sub #median(np.uint8(Img1_sub), disk(2))
+                                  
         #Plot summed data over time for reviewing
         with sns.axes_style("white"):
             fig1 = plt.imshow(np.sum(data[:,:,:], axis=2), cmap='jet')

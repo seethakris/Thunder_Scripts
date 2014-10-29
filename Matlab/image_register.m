@@ -2,7 +2,7 @@ function image_register
 
 %% Register images in X-Y
 % User Input
-Data_Folder = '~/Desktop/Thunder/Data/Dorsal_Raphe_Gcamp_Tph2/';
+Data_Folder = '~/Desktop/Thunder/Data/UV/';
 
 %Create a Registered folder to save all registered images
 Result_Folder = [Data_Folder, filesep, 'Registered'];

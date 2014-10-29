@@ -38,7 +38,7 @@ def make_pca_maps(pca, imgs, img_size_x, img_size_y, scale_num, nsamples, thresh
     
     #Get distribution and reconstruction using first two components
 
-    recon = map(lambda x: (x[0] * pca.comps[0, :] + x[1] * pca.comps[1, :]).tolist(), pts)
+    recon = map(lambda x: (x[0] * pca.comps[0, :] + x[1] * pca.comps[1, :] + x[2] * pca.comps[2, :]).tolist(), pts)
     tt = range(0, np.shape(pca.comps[0,:])[0])
     
     #Get specific color matches across animals and get mean and standard deviation
@@ -49,7 +49,7 @@ def make_pca_maps(pca, imgs, img_size_x, img_size_y, scale_num, nsamples, thresh
     matches = [np.where((np.array(array) == match).all(axis=1)) for match in unique_clrs] #Match the colors with the original rows
     
     #From maps get number of pixel matches with color for each plane
-    array_maps = maps.astype(np.int64)
+    array_maps = np.round(maps.astype(np.float16))
     matched_pixels = np.zeros((np.size(unique_clrs,0),num_planes))
     if len(maps.shape) == 3:
         array_maps_plane = np.reshape(array_maps, np.size(array_maps,0)*np.size(array_maps,1),3)
@@ -68,8 +68,33 @@ def make_pca_maps(pca, imgs, img_size_x, img_size_y, scale_num, nsamples, thresh
             temp_ele = np.array(matches[ii])
             matched_signals[ii].clr_grped_signal = [np.array(recon[ele]) for ele in temp_ele[0,:]] #Get signals from the reconstruction that match the colors                     
             mean_signal[ii,:] = np.mean(matched_signals[ii].clr_grped_signal,axis=0) 
-            sem_signal[ii,:] = sp.stats.sem(matched_signals[ii].clr_grped_signal,axis=0)  
+            sem_signal[ii,:] = sp.stats.sem(matched_signals[ii].clr_grped_signal,axis=0) 
             
+    
+#    #Change Colors in IPN
+#    change_maps = np.zeros((np.size(maps,0), np.size(maps,1),3), dtype=float)
+#    change_maps = maps[:,:,0,:]
+#    
+#    for ii in range(0,np.size(change_maps,0)):
+#        for jj in range(0,np.size(change_maps,1)):
+#            A1 = np.squeeze(change_maps[ii,jj,:])
+#            if round(A1[0],1)==0 and round(A1[1],1)!=0 and round(A1[2],1)==0: #Green to red
+#                print "change g to r"
+#                change_maps[ii,jj,0] = A1[1]
+#                change_maps[ii,jj,1] = 0
+#            elif round(A1[0],1)!=0 and round(A1[1],1)!=0 and round(A1[2],1)==0: #yellow to pink
+#                print "change y to p"
+#                change_maps[ii,jj,2] = A1[1]
+#                change_maps[ii,jj,1] = 0
+#            elif round(A1[0],1)!=0 and round(A1[1],1)==0 and round(A1[2],1)==0: #red ot green
+#                print "change r to g"
+#                change_maps[ii,jj,1] = A1[0]
+#                change_maps[ii,jj,0] = 0
+#            elif round(A1[0],1)!=0 and round(A1[1],1)==0 and round(A1[2],1)!=0: #pink to yellow
+#                print "change p to y"
+#                change_maps[ii,jj,1] = A1[2]
+#                change_maps[ii,jj,2] = 0
+           
         
     return maps, pts, clrs, recon, tt, unique_clrs, matched_pixels, matched_signals, mean_signal, sem_signal
     

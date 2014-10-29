@@ -45,6 +45,12 @@ def plot_pca_figures(pca, maps, pts, clrs, recon,tt,unique_clrs, matched_pixels,
                 pp.savefig(fig2)
                 plt.close()
                 
+#        with sns.axes_style("white"):
+#            fig2 = plt.imshow(change_maps.transpose((1,0,2)))
+#            fig2 = plt.gcf()
+#            pp.savefig(fig2)
+#            plt.close()
+                
 
     ########### Plot components ##################
     fig2 = plt.figure()
@@ -73,39 +79,17 @@ def plot_pca_figures(pca, maps, pts, clrs, recon,tt,unique_clrs, matched_pixels,
 
     
     with sns.axes_style("white"):
-        fig2 = plt.subplot(247)
-        fig2 = sns.boxplot(np.transpose(matched_pixels[:,0:6]),linewidth=3, widths=.5, color=unique_clrs)
+        fig2 = plt.subplot(222)
+        fig2 = sns.boxplot(np.transpose(matched_pixels),linewidth=3, widths=.5, color=unique_clrs)
         for ii in range(0,np.size(unique_clrs,0)):
-            fig2 = plt.plot(np.repeat(ii+1,np.size(matched_pixels[:,0:6],1)), np.transpose(matched_pixels[ii,0:6]),'s', \
+            fig2 = plt.plot(np.repeat(ii+1,np.size(matched_pixels,1)), np.transpose(matched_pixels[ii,0:6]),'s', \
             color=unique_clrs[ii], markersize=5, markeredgecolor='k', markeredgewidth=2) 
             plt.locator_params(axis = 'y', nbins = 4)
         sns.axlabel("Colors", "Number of Pixels")
         plt.title('Gcamp6f')
         sns.despine(offset=10, trim=True);    
         
-        fig2 = plt.subplot(248)
-        fig2 = sns.boxplot(np.transpose(matched_pixels[:,6:]),linewidth=3, widths=.5, color=unique_clrs)
-        for ii in range(0,np.size(unique_clrs,0)):
-            fig2 = plt.plot(np.repeat(ii+1,np.size(matched_pixels[:,6:],1)), np.transpose(matched_pixels[ii,6:]),'s', \
-            color=unique_clrs[ii], markersize=5, markeredgecolor='k', markeredgewidth=2) 
-            plt.locator_params(axis = 'y', nbins = 4)
-        plt.title('tph2')    
-        sns.axlabel("Colors", "Number of Pixels")
-        sns.despine(offset=10, trim=True);   
-        
-            #Plot mean projection        
-    with sns.axes_style("white"):  
-        temp = (np.max(maps[:,:,0:6,:], axis=2))
-        fig2 = plt.subplot(243)
-        plt.imshow(temp.astype(np.float16))
-        plt.axis('off')
-        plt.title('Max Gcamp6f')
-        
-        temp = (np.max(maps[:,:,6:,:], axis=2))
-        fig2 = plt.subplot(244)
-        plt.imshow(temp.astype(np.float16))
-        plt.axis('off')
-        plt.title('Max tph2')
+                
         
         plt.tight_layout()
         fig2 = plt.gcf()
@@ -124,3 +108,7 @@ def plot_vertical_lines():
     plt.axvline(x=146, linestyle='--', color='k', linewidth=1)
     plt.axvline(x=166, linestyle='-', color='k', linewidth=1)
     plt.axvline(x=186, linestyle='--', color='k', linewidth=1)
+    plt.axvline(x=206, linestyle='-', color='k', linewidth=1)
+    plt.axvline(x=225, linestyle='--', color='k', linewidth=1)
+    plt.axvline(x=246, linestyle='-', color='k', linewidth=1)
+    plt.axvline(x=265, linestyle='--', color='k', linewidth=1)

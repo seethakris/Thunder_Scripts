@@ -4,17 +4,17 @@ Get user input and Run Thunder analysis
 """
 
 #User input for experiment folder
-Exp_Folder = '/Users/seetha/Desktop/Thunder/Data/Dorsal_Raphe_Gcamp_Tph2/Registered/'
+Exp_Folder = '/Users/seetha/Desktop/Thunder/Data/UV_DR/'
 
 #EOther experiment parameters
 num_time = 285  #Number of time points
-num_time_req  = 205 #Number of time points to include in analysis
-img_size_x = 126 #X and Y resolution - if there are images that dont have this resolution, 
-img_size_y = 260 #they will be resized
+num_time_req  = 285 #Number of time points to include in analysis
+img_size_x = 128 #X and Y resolution - if there are images that dont have this resolution, 
+img_size_y = 256 #they will be resized
 f_f_flag = 0 #0-raw data, 1-delta f/f
-filename_suffix = 'Allfiles' #Suffix to save different files with
-pca_components = 2 #Number of pca components to detect from files
-num_pca_colors = 300 #Number of colors on the pca maps
+filename_suffix = 'Allfiles' #Prefix to save different files with
+pca_components = 3 #Number of pca components to detect from files
+num_pca_colors = 150 #Number of colors on the pca maps
 thresh_pca = 0.0001 #Threshold above which to plot the pca components
 num_samples = 10000 #number of random samples to select to do reconstruction
 color_map = 'polar' #Colormap for plotting principle components
@@ -29,7 +29,7 @@ import scipy
 #Import custom files
 from create_data_for_thunder import create_textfile #To create text files
 from run_thunder_analysis import run_pca, make_pca_maps
-from plot_thunder_raphe import plot_pca_figures
+from plot_thunder_UV import plot_pca_figures
 #Import thunder libraries
 from thunder.utils import ThunderContext
 
